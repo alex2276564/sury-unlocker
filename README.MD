@@ -1,10 +1,10 @@
-# ⚠️ Untested. I'll finalize it later.
+# ⚠️ Warning: This project has not been thoroughly tested. Use at your own risk. I'll finalize it later. ⚠️
 
 
 # Sury Unlocker Script 🌐💡  
 [![Linux Distributions](https://img.shields.io/badge/Linux-Debian%20%7C%20Ubuntu-blue)](https://www.debian.org/)  
 [![Bash Compatible](https://img.shields.io/badge/Bash-Compatible-green)](https://www.gnu.org/software/bash/)  
-[![Version 1.0](https://img.shields.io/badge/Version-1.0-blue.svg)](https://github.com/alex2276564/sury-unlocker)
+[![Version 1.0](https://img.shields.io/badge/Version-1.0-blue.svg)](https://github.com/alex2276564/sury-unlocker)  
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)  
 
 **Sury Unlocker Script** is a Bash solution to bypass IP restrictions for `packages.sury.org` using OpenVPN with split-tunneling. This script is designed to work seamlessly on Debian-based Linux distributions. It supports Docker integration and allows you to easily enable or disable OpenVPN with custom configurations.
