@@ -1,3 +1,6 @@
+# ⚠️ Untested. I'll finalize it later.
+
+
 # Sury Unlocker Script 🌐💡  
 [![Linux Distributions](https://img.shields.io/badge/Linux-Debian%20%7C%20Ubuntu-blue)](https://www.debian.org/)  
 [![Bash Compatible](https://img.shields.io/badge/Bash-Compatible-green)](https://www.gnu.org/software/bash/)  
@@ -120,7 +123,8 @@ FROM debian:latest
 RUN apt-get update && apt-get install -y \
     git \
     openvpn \
-    dnsutils
+    dnsutils \
+    sudo
 
 # Clone and set up the Sury unlocker script
 RUN git clone https://github.com/alex2276564/sury-unlocker.git /opt/sury-unlocker
