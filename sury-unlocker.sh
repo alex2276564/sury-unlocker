@@ -16,22 +16,51 @@ usage() {
     echo "Options:"
     echo "  -path=file.ovpn      Specify a custom OpenVPN configuration file."
     echo "  -disableovpn         Disable OpenVPN daemon if running."
-    echo "  -addsuryrepositories Install Sury repositories using the official installer (use only when VPN is enabled)."
+    echo "  -addsuryrepositories Install Sury repositories (Debian-based systems only)."
     echo "  -help                Display this help message."
 }
 
-# Function to install a package if not already installed
+# Function to detect the OS family (Debian or RHEL)
+detect_os_family() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        case "$ID" in
+        debian | ubuntu | linuxmint | elementary | kali | parrot | deepin | pop | neon | zorin)
+            echo "debian"
+            ;;
+        rhel | centos | fedora | rocky | almalinux | oracle | scientific | amazon | redhat | alma | ol)
+            echo "rhel"
+            ;;
+        *)
+            echo "unknown"
+            ;;
+        esac
+    else
+        echo "unknown"
+    fi
+}
+
+# Function to install a package if not already installed (Debian or RHEL)
 install_package() {
     local package=$1
+    local os_family=$2
 
-    echo "Installing $package..."
-    sudo apt update && sudo apt install -y "$package"
+    if [ "$os_family" = "debian" ]; then
+        echo "Installing $package on Debian-based system..."
+        sudo apt update && sudo apt install -y "$package"
+    elif [ "$os_family" = "rhel" ]; then
+        echo "Installing $package on RHEL-based system..."
+        sudo yum install -y "$package" # dnf is not used for compatibility with legacy systems
+    else
+        echo "Unsupported OS."
+        exit 1
+    fi
 }
 
 # Function to configure and start OpenVPN
 configure_openvpn() {
     local ovpn_file="$1"
-    local sury_ip="$2"
+    local target_ip="$2"
 
     echo "Configuring OpenVPN for split tunneling..."
 
@@ -41,13 +70,13 @@ configure_openvpn() {
         echo "Added route-nopull to the OpenVPN configuration file."
     fi
 
-    # Check if the sury_ip is already in the file
-    if grep -q "route $sury_ip 255.255.255.255" "$ovpn_file"; then
-        echo "The sury_ip is already configured in the OpenVPN file. No changes needed."
+    # Check if the target_ip is already in the file
+    if grep -q "route $target_ip 255.255.255.255" "$ovpn_file"; then
+        echo "The target_ip is already configured in the OpenVPN file. No changes needed."
     else
-        # Replace the existing sury_ip if it exists
-        sed -i "/route [0-9.]* 255.255.255.255/c\\route $sury_ip 255.255.255.255" "$ovpn_file"
-        echo "Updated sury_ip in the OpenVPN configuration file."
+        # Replace the existing target_ip if it exists
+        sed -i "/route [0-9.]* 255.255.255.255/c\\route $target_ip 255.255.255.255" "$ovpn_file"
+        echo "Updated target_ip in the OpenVPN configuration file."
     fi
 
     # Start the OpenVPN daemon
@@ -87,9 +116,16 @@ disable_openvpn() {
     echo "OpenVPN disabled."
 }
 
-# Function to install Sury repositories (official installer is used)
+# Function to install Sury repositories (only for Debian-based systems)
 install_sury_repositories() {
-    echo "Installing Sury repositories using the official installer..."
+    local os_family=$1
+
+    if [ "$os_family" != "debian" ]; then
+        echo "Sury repositories can only be installed on Debian-based systems. Skipping."
+        exit 0
+    fi
+
+    echo "Installing Sury repositories on Debian-based system using the official installer.."
 
     if [ "$(whoami)" != "root" ]; then
         SUDO=sudo
@@ -130,35 +166,48 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
+# Detect OS family
+os_family=$(detect_os_family)
+
+if [ "$os_family" = "unknown" ]; then
+    echo "Unsupported or unknown OS. Exiting."
+    exit 1
+fi
+
 if $disable_ovpn; then
     disable_openvpn
     exit 0
 fi
 
 if $add_sury_repos; then
-    install_sury_repositories
+    install_sury_repositories "$os_family"
     exit 0
 fi
 
 # Check and install required packages
 if ! command -v openvpn &>/dev/null; then
-    install_package openvpn
+    install_package openvpn "$os_family"
 fi
 
 if ! command -v nslookup &>/dev/null; then
-    install_package dnsutils
+    if [ "$os_family" = "debian" ]; then
+        install_package dnsutils "$os_family"
+    elif [ "$os_family" = "rhel" ]; then
+        install_package bind-utils "$os_family"
+    fi
 fi
 
-# Resolve the IPv4 address of packages.sury.org
-echo "Resolving IPv4 address for packages.sury.org..."
-sury_ip=$(nslookup -type=A packages.sury.org | awk '/^Address: / { print $2; exit }')
+# Resolve the IPv4 address of the target site (replace with packages.sury.org if needed)
+target_site="packages.sury.org"
+echo "Resolving IPv4 address for $target_site..."
+target_ip=$(nslookup -type=A $target_site | awk '/^Address: / { print $2; exit }')
 
-if [[ -z "$sury_ip" ]]; then
-    echo "Failed to resolve IPv4 address for packages.sury.org. Exiting."
+if [[ -z "$target_ip" ]]; then
+    echo "Failed to resolve IPv4 address for $target_site. Exiting."
     exit 1
 fi
 
-echo "Resolved IPv4: $sury_ip"
+echo "Resolved IPv4: $target_ip"
 
 # Check for custom OpenVPN file or default to a file in the script's directory
 if [[ -n "$custom_ovpn" ]]; then
@@ -185,4 +234,4 @@ if [[ ! -f "$ovpn_file" ]]; then
 fi
 
 # Configure OpenVPN and start the daemon
-configure_openvpn "$ovpn_file" "$sury_ip"
+configure_openvpn "$ovpn_file" "$target_ip"
