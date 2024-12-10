@@ -7,7 +7,7 @@
 [![Version 1.0](https://img.shields.io/badge/Version-1.0-blue.svg)](https://github.com/alex2276564/sury-unlocker)  
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)  
 
-**Sury Unlocker Script** is a Bash solution created in response to the July 2024 geo-blocking of `packages.sury.org` for Russian IP addresses. When Ondřej Surý implemented geo-restrictions for his PHP PPA repositories in Russia, this script was developed to provide a legitimate way to access these essential development resources. It uses OpenVPN with split-tunneling to bypass IP restrictions, supporting both Debian-based and RHEL-based distributions. While Sury repositories are only available for Debian-based systems, the script can be used in both host systems and Docker containers regardless of the host OS.
+**Sury Unlocker Script** is a Bash solution created in response to the [July 2024 geo-blocking](https://github.com/oerdnj/deb.sury.org/issues/2098) of `packages.sury.org` for Russian IP addresses. When Ondřej Surý implemented geo-restrictions for his PHP PPA repositories in Russia, this script was developed to provide a legitimate way to access these essential development resources. It uses OpenVPN with split-tunneling to bypass IP restrictions, supporting both Debian-based and RHEL-based distributions. While Sury repositories are only available for Debian-based systems, the script can be used in both host systems and Docker containers regardless of the host OS.
 
 ---
 
@@ -49,9 +49,16 @@
 
 ### Installation Steps
 1. **Clone the Repository:**  
+   For Debian-based systems:
    ```bash
    apt update && \
    apt install git -y && \
+   git clone https://github.com/alex2276564/sury-unlocker.git && \
+   cd sury-unlocker
+   ```
+   For RHEL-based systems:
+   ```bash
+   yum install git -y && \
    git clone https://github.com/alex2276564/sury-unlocker.git && \
    cd sury-unlocker
    ```
