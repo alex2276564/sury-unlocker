@@ -87,6 +87,13 @@ Before running the script, ensure that your `.ovpn` file is in the same director
 
 This script provides several options for customizing its behavior. Here's how you can use it:
 
+### View Help
+
+To see all available options and their descriptions:
+```bash
+./sury-unlocker.sh -help
+```
+
 ### Basic Usage
 
 Run the script without any arguments to automatically configure OpenVPN with split-tunneling for `packages.sury.org`:  
