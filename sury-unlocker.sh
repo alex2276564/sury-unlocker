@@ -47,10 +47,10 @@ install_package() {
 
     if [ "$os_family" = "debian" ]; then
         echo "Installing $package on Debian-based system..."
-        sudo apt update && sudo apt install -y "$package"
+        $SUDO apt update && $SUDO apt install -y "$package"
     elif [ "$os_family" = "rhel" ]; then
         echo "Installing $package on RHEL-based system..."
-        sudo yum install -y "$package" # dnf is not used for compatibility with legacy systems
+        $SUDO yum install -y "$package"
     else
         echo "Unsupported OS."
         exit 1
@@ -74,14 +74,13 @@ configure_openvpn() {
     if grep -q "route $target_ip 255.255.255.255" "$ovpn_file"; then
         echo "The target_ip is already configured in the OpenVPN file. No changes needed."
     else
-        # Replace the existing target_ip if it exists
-        sed -i "/route [0-9.]* 255.255.255.255/c\\route $target_ip 255.255.255.255" "$ovpn_file"
-        echo "Updated target_ip in the OpenVPN configuration file."
+        echo "Adding new route to the OpenVPN configuration file..."
+        echo "route $target_ip 255.255.255.255" >>"$ovpn_file"
     fi
 
-    # Start the OpenVPN daemon
-    sudo systemctl start openvpn || true
-    sudo openvpn --config "$ovpn_file" --daemon
+    # Start OpenVPN as a daemon
+    echo "Starting OpenVPN..."
+    $SUDO openvpn --config "$ovpn_file" --daemon
     echo "OpenVPN configured and started. Verify access to packages.sury.org."
 }
 
@@ -89,25 +88,32 @@ configure_openvpn() {
 disable_openvpn() {
     echo "Disabling OpenVPN..."
 
-    if systemctl is-active --quiet openvpn; then
-        echo "Stopping OpenVPN service..."
-        sudo systemctl stop openvpn || true
+    # Try to stop OpenVPN using systemctl or service
+    if command -v systemctl &>/dev/null && systemctl is-active --quiet openvpn; then
+        echo "Stopping OpenVPN service with systemctl..."
+        $SUDO systemctl stop openvpn || true
+    elif command -v service &>/dev/null; then
+        echo "Stopping OpenVPN service with service..."
+        $SUDO service openvpn stop || true
     else
-        echo "OpenVPN service is not running."
+        echo "Systemctl and service are unavailable. Skipping service stop."
     fi
 
-    # Find all manually started OpenVPN processes and terminate them
+    # Kill any remaining OpenVPN processes manually
+    echo "Checking for remaining OpenVPN processes..."
     openvpn_pids=$(pgrep openvpn)
     if [ -n "$openvpn_pids" ]; then
         echo "Killing manually started OpenVPN processes..."
-        sudo kill $openvpn_pids || true
+        $SUDO kill $openvpn_pids || true
 
-        # Check if there are any processes left and force termination if necessary
+        # Wait and check if processes have been terminated
         sleep 2
         openvpn_pids_remaining=$(pgrep openvpn)
         if [ -n "$openvpn_pids_remaining" ]; then
             echo "Forcing termination of remaining OpenVPN processes..."
-            sudo kill -9 $openvpn_pids_remaining || true
+            $SUDO kill -9 $openvpn_pids_remaining || true
+        else
+            echo "All OpenVPN processes terminated successfully."
         fi
     else
         echo "No manually started OpenVPN processes found."
@@ -127,21 +133,24 @@ install_sury_repositories() {
 
     echo "Installing Sury repositories on Debian-based system using the official installer.."
 
-    if [ "$(whoami)" != "root" ]; then
-        SUDO=sudo
-    fi
-
-    ${SUDO} apt-get update
-    ${SUDO} apt-get -y install lsb-release ca-certificates curl
-    ${SUDO} curl -sSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb
-    ${SUDO} dpkg -i /tmp/debsuryorg-archive-keyring.deb
-    ${SUDO} sh -c 'echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
-    ${SUDO} apt-get update
+    $SUDO apt-get update
+    $SUDO apt-get -y install lsb-release ca-certificates curl
+    $SUDO curl -sSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb
+    $SUDO dpkg -i /tmp/debsuryorg-archive-keyring.deb
+    $SUDO sh -c 'echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
+    $SUDO apt-get update
 
     echo "Sury repositories installed successfully using the official method."
 }
 
 # Main script logic
+
+# Check if sudo is available
+if command -v sudo &>/dev/null; then
+    SUDO="sudo"
+else
+    SUDO=""
+fi
 
 # Parse command-line arguments
 custom_ovpn=""
@@ -197,7 +206,7 @@ if ! command -v nslookup &>/dev/null; then
     fi
 fi
 
-# Resolve the IPv4 address of the target site (replace with packages.sury.org if needed)
+# Resolve the IPv4 address of the target site
 target_site="packages.sury.org"
 echo "Resolving IPv4 address for $target_site..."
 target_ip=$(nslookup -type=A $target_site | awk '/^Address: / { print $2; exit }')
@@ -214,7 +223,7 @@ if [[ -n "$custom_ovpn" ]]; then
     ovpn_file="$custom_ovpn"
 else
     script_dir=$(dirname "$0")
-    ovpn_files=($script_dir/*.ovpn)
+    ovpn_files=("$script_dir"/*.ovpn)
     if [[ ${#ovpn_files[@]} -eq 0 ]]; then
         echo "No .ovpn file found in the script's directory."
         echo "Please provide a valid .ovpn file or use the -path option."

@@ -1,6 +1,3 @@
-# ⚠️ Warning: This project has not been thoroughly tested. Use at your own risk. I'll finalize it later. ⚠️
-
-
 # Sury Unlocker Script 🌐💡  
 [![Linux Distributions](https://img.shields.io/badge/Linux-Debian%20%7C%20RHEL-blue)](https://www.debian.org/)  
 [![Bash Compatible](https://img.shields.io/badge/Bash-Compatible-green)](https://www.gnu.org/software/bash/)  
@@ -120,20 +117,37 @@ If you want to stop the OpenVPN daemon, use the `-disableovpn` option:
 
 ---
 
+
 ## 🐳 Docker Integration
 
 You can include the **Sury Unlocker Script** in your `Dockerfile` to bypass the Sury.org block when building or running containerized applications. Before you begin, in this example make sure to place your `your_custom_name.ovpn` file (the OpenVPN configuration file) in the same directory as the `Dockerfile`. This file will be copied into the container during the build process.
 
+### Important Notes:
 
-### Important Note for Debian/RHEL Host Systems:
+1. To run OpenVPN inside a container, you need to grant additional privileges to the container. You can do this in two ways:
+
+Using docker run:
+```bash
+docker run --cap-add=NET_ADMIN --device=/dev/net/tun:/dev/net/tun your-image-name
+```
+
+Using docker-compose.yml:
+```yaml
+services:
+  your-service:
+    build: .
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+```
+
+2. For Debian/RHEL Host Systems:
 If you are running a **Debian** or **RHEL** based host system, you can run the script directly on the host. Once the VPN is activated on the host, all Docker containers will automatically use the VPN connection through the host network.
 
+3. In the Dockerfile example below, OpenVPN will only be active during the build phase (when installing PHP 7.4). After container startup, the VPN connection will not be established automatically.
 
----
-
-#### Enabling OpenVPN and Installing Sury Repositories in Docker:
-
-If you prefer to run the VPN inside the container, use the following `Dockerfile` example:  
+### Dockerfile Example:
 ```Dockerfile
 FROM debian:latest
 
@@ -142,8 +156,7 @@ FROM debian:latest
 RUN apt-get update && apt-get install -y \
     git \
     openvpn \
-    dnsutils \
-    sudo
+    dnsutils
 
 # Clone and set up the Sury unlocker script
 RUN git clone https://github.com/alex2276564/sury-unlocker.git /opt/sury-unlocker
@@ -151,7 +164,6 @@ WORKDIR /opt/sury-unlocker
 RUN chmod +x sury-unlocker.sh
 
 # Copy the custom .ovpn file into the container
-# Make sure you've placed the 'your_custom_name.ovpn' file in the same directory as this Dockerfile
 COPY your_custom_name.ovpn /opt/sury-unlocker/your_custom_name.ovpn
 
 # Run the Sury unlocker script with the custom OpenVPN config
@@ -160,30 +172,12 @@ RUN ./sury-unlocker.sh -path=/opt/sury-unlocker/your_custom_name.ovpn
 # Install Sury repositories using the official installer integrated into the script
 RUN ./sury-unlocker.sh -addsuryrepositories
 
-# The following lines are commented out because they are now automatically handled by the script when using `./sury-unlocker.sh -addsuryrepositories`.
-# The script performs the equivalent actions internally to add the Sury PHP repository.
-#
-# # Install dependencies for adding the Sury repository
-# # These packages are necessary to add and manage the Sury PHP repository
-# RUN apt-get install -y \
-#     lsb-release \
-#     ca-certificates \
-#     curl
-#
-# # Add Sury's repository using the official installation method
-# RUN curl -sSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb && \
-#     dpkg -i /tmp/debsuryorg-archive-keyring.deb && \
-#     sh -c 'echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list' && \
-#     apt-get update
-
 # Install PHP 7.4 (or any other package from Sury)
 RUN apt-get install -y php7.4
-
-# (Optional) Disable OpenVPN if not needed later in the container lifecycle
-# RUN /opt/sury-unlocker/sury-unlocker.sh -disableovpn
-
-# ... rest of your Dockerfile ...
 ```
+
+Note: Without proper container privileges (NET_ADMIN capability and TUN device access), OpenVPN will not work inside the container. Make sure to run your container with the necessary privileges as shown in the examples above.
+
 
 ---
 
