@@ -117,6 +117,13 @@
 ./sury-unlocker.sh -addsuryrepositories
 ```
 
+### Очистка репозиториев Sury
+
+Чтобы удалить репозитории Sury и связанные с ними файлы из вашей системы, используйте опцию `-cleansuryrepositories`:
+```bash
+./sury-unlocker.sh -cleansuryrepositories
+```
+
 ### Отключение OpenVPN
 
 Если нужно остановить демон OpenVPN, используйте опцию `-disableovpn`:  
@@ -254,7 +261,7 @@ RUN apt-get install -y php7.4
 3. **Проблемы с подключением к VPN**  
    - Убедитесь, что VPN-сервер доступен.
    - Используйте `.ovpn` конфигурации с TCP.
-   - Попробуйте альтернативные `.ovpn` файлы с [FreeOpenVPN.org](https://www.freeopenvpn.org/).
+   - Попробуйте альтернативные `.ovpn` файлы с [FreeOpenVPN.org](https://www.freeopenvpn.org/) или [OpenTunnel.net](https://opentunnel.net/openvpn/).
 
 4. **Ошибка установки репозиториев Sury**  
    - Убедитесь, что вы используете систему на базе Debian.

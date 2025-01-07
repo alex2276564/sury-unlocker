@@ -117,6 +117,13 @@ To install Sury repositories using the official installer (only for Debian-based
 ./sury-unlocker.sh -addsuryrepositories
 ```
 
+### Clean Sury Repositories
+
+To remove Sury repositories and related files from your system, use the `-cleansuryrepositories` option:
+```bash
+./sury-unlocker.sh -cleansuryrepositories
+```
+
 ### Disable OpenVPN
 
 If you want to stop the OpenVPN daemon, use the `-disableovpn` option:  
@@ -251,7 +258,7 @@ This script follows these steps:
 3. **VPN Connection Problems**  
    - Ensure the VPN server is accessible
    - Try TCP-based `.ovpn` configurations
-   - Consider alternative `.ovpn` files from [FreeOpenVPN.org](https://www.freeopenvpn.org/)
+   - Consider alternative `.ovpn` files from [FreeOpenVPN.org](https://www.freeopenvpn.org/) or [OpenTunnel.net](https://opentunnel.net/openvpn/)
 
 4. **Sury Repository Installation Fails**  
    - Verify you're using a Debian-based system

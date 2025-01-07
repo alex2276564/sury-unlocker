@@ -17,6 +17,7 @@ usage() {
     echo "  -path=file.ovpn      Specify a custom OpenVPN configuration file."
     echo "  -disableovpn         Disable OpenVPN daemon if running."
     echo "  -addsuryrepositories Install Sury repositories (Debian-based systems only)."
+    echo "  -cleansuryrepositories Remove Sury repositories and related files."
     echo "  -help                Display this help message."
 }
 
@@ -55,6 +56,41 @@ install_package() {
         echo "Unsupported OS."
         exit 1
     fi
+}
+
+# Function to clean Sury repositories
+clean_sury_repositories() {
+    local os_family=$1
+
+    if [ "$os_family" != "debian" ]; then
+        echo "Sury repositories can only be cleaned on Debian-based systems. Skipping."
+        exit 0
+    fi
+
+    echo "Cleaning Sury repositories..."
+
+    # Remove repository file
+    if [ -f /etc/apt/sources.list.d/php.list ]; then
+        echo "Removing PHP repository file..."
+        $SUDO rm -f /etc/apt/sources.list.d/php.list
+    fi
+
+    # Remove keyring files
+    echo "Removing keyring files..."
+    $SUDO rm -f /usr/share/keyrings/deb.sury.org-php.gpg
+    $SUDO rm -f /etc/apt/trusted.gpg.d/php.gpg
+
+    # Remove the debsuryorg-archive-keyring package if installed
+    if dpkg -l | grep -q debsuryorg-archive-keyring; then
+        echo "Removing debsuryorg-archive-keyring package..."
+        $SUDO apt-get remove -y debsuryorg-archive-keyring
+    fi
+
+    # Update package lists
+    echo "Updating package lists..."
+    $SUDO apt-get update
+
+    echo "Sury repositories cleaned successfully."
 }
 
 # Function to configure and start OpenVPN
@@ -156,12 +192,14 @@ fi
 custom_ovpn=""
 disable_ovpn=false
 add_sury_repos=false
+clean_sury_repos=false
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
     -path=*) custom_ovpn="${1#*=}" ;;
     -disableovpn) disable_ovpn=true ;;
     -addsuryrepositories) add_sury_repos=true ;;
+    -cleansuryrepositories) clean_sury_repos=true ;;
     -help)
         usage
         exit 0
@@ -190,6 +228,11 @@ fi
 
 if $add_sury_repos; then
     install_sury_repositories "$os_family"
+    exit 0
+fi
+
+if $clean_sury_repos; then
+    clean_sury_repositories "$os_family"
     exit 0
 fi
 
