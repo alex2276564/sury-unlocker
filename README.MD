@@ -6,7 +6,7 @@
 
 [🇷🇺 Руководство на русском](README.ru.md)
 
-**Sury Unlocker Script** is a Bash solution created in response to the [July 2024 geo-blocking](https://github.com/oerdnj/deb.sury.org/issues/2098) of `packages.sury.org` for Russian IP addresses. When Ondřej Surý implemented geo-restrictions for his PHP PPA repositories in Russia, this script was developed to provide a legitimate way to access these essential development resources. It uses OpenVPN with split-tunneling to bypass IP restrictions, supporting both Debian-based and RHEL-based distributions. While Sury repositories are only available for Debian-based systems, the script can be used in both host systems and Docker containers regardless of the host OS.
+**Sury Unlocker Script** is a Bash solution created in response to the [July 2024 geo-blocking](https://github.com/oerdnj/deb.sury.org/issues/2155) of `packages.sury.org` for Russian IP addresses. When Ondřej Surý implemented geo-restrictions for his PHP PPA repositories in Russia, this script was developed to provide a legitimate way to access these essential development resources. It uses OpenVPN with split-tunneling to bypass IP restrictions, supporting both Debian-based and RHEL-based distributions. While Sury repositories are only available for Debian-based systems, the script can be used in both host systems and Docker containers regardless of the host OS.
 
 ---
 
