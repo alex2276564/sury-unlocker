@@ -110,6 +110,13 @@ Specify a custom `.ovpn` file with the `-path` option:
 ./sury-unlocker.sh -path=/path/to/your/your_custom_name.ovpn
 ```
 
+### (Optional) Provide VPN Credentials
+
+If your VPN requires authentication, you can provide the username and password:
+```bash
+./sury-unlocker.sh -username=your_username -password=your_password
+```
+
 ### Install Sury Repositories
 
 To install Sury repositories using the official installer (only for Debian-based systems or Debian-based Docker containers, use only when VPN is enabled):

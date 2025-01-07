@@ -18,6 +18,8 @@ usage() {
     echo "  -disableovpn         Disable OpenVPN daemon if running."
     echo "  -addsuryrepositories Install Sury repositories (Debian-based systems only)."
     echo "  -cleansuryrepositories Remove Sury repositories and related files."
+    echo "  -username=<username> Specify the OpenVPN username (optional)."
+    echo "  -password=<password> Specify the OpenVPN password (optional)."
     echo "  -help                Display this help message."
 }
 
@@ -193,6 +195,8 @@ custom_ovpn=""
 disable_ovpn=false
 add_sury_repos=false
 clean_sury_repos=false
+vpn_username=""
+vpn_password=""
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -200,6 +204,8 @@ while [[ "$#" -gt 0 ]]; do
     -disableovpn) disable_ovpn=true ;;
     -addsuryrepositories) add_sury_repos=true ;;
     -cleansuryrepositories) clean_sury_repos=true ;;
+    -username=*) vpn_username="${1#*=}" ;;
+    -password=*) vpn_password="${1#*=}" ;;
     -help)
         usage
         exit 0
@@ -285,5 +291,31 @@ if [[ ! -f "$ovpn_file" ]]; then
     exit 1
 fi
 
+# Handle VPN credentials if provided
+if [[ -n "$vpn_username" && -n "$vpn_password" ]]; then
+    echo "OpenVPN credentials provided."
+    auth_file=$(mktemp)
+    echo "$vpn_username" >"$auth_file"
+    echo "$vpn_password" >>"$auth_file"
+    chmod 600 "$auth_file"
+
+    # Add auth-user-pass to OpenVPN config if not present
+    if ! grep -q "auth-user-pass" "$ovpn_file"; then
+        echo "auth-user-pass $auth_file" >>"$ovpn_file"
+    else
+        # Update existing auth-user-pass line
+        sed -i "s|auth-user-pass.*|auth-user-pass $auth_file|" "$ovpn_file"
+    fi
+else
+    echo "OpenVPN credentials not provided. If your VPN requires authentication, use -username and -password options."
+fi
+
 # Configure OpenVPN and start the daemon
 configure_openvpn "$ovpn_file" "$target_ip"
+
+# Clean up the temporary auth file if it was created
+if [[ -n "$auth_file" ]]; then
+    rm -f "$auth_file"
+fi
+
+echo "Script execution completed."
