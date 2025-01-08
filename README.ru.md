@@ -84,10 +84,10 @@
    ```bash
    ./sury-unlocker.sh -path=your_custom_name.ovpn
    ```
-5. **Очистите репозитории Sury (опционально):**
-   - Если после блокировки у вас появляется ошибка при `apt update`, используйте эту команду для очистки старых репозиториев:
+5. **Удалите репозитории Sury (опционально):**
+   - Если после блокировки у вас появляется ошибка при `apt update`, используйте эту команду для удаления Sury репозиториев:
    ```bash
-   ./sury-unlocker.sh -cleansuryrepositories
+   ./sury-unlocker.sh -deletesuryrepositories
    ```
 6. **Добавьте репозитории Sury официальным методом:**
    ```bash
@@ -152,11 +152,11 @@
 ./sury-unlocker.sh -addsuryrepositories
 ```
 
-### Очистка репозиториев Sury
+### Удаление репозиториев Sury
 
-Чтобы удалить репозитории Sury и связанные с ними файлы из вашей системы, используйте опцию `-cleansuryrepositories`:
+Чтобы удалить репозитории Sury и связанные с ними файлы из вашей системы, используйте опцию `-deletesuryrepositories`:
 ```bash
-./sury-unlocker.sh -cleansuryrepositories
+./sury-unlocker.sh -deletesuryrepositories
 ```
 
 ### Отключение OpenVPN
@@ -263,7 +263,7 @@ RUN apt-get install -y php7.4
 6. **Управление репозиториями Sury (только для Debian-систем)**  
    При использовании соответствующих опций:
    - `-addsuryrepositories`: устанавливает репозитории через официальный установщик
-   - `-cleansuryrepositories`: полностью удаляет все файлы репозиториев Sury
+   - `-deletesuryrepositories`: полностью удаляет все файлы репозиториев Sury
    - Автоматически проверяет совместимость системы перед операциями
 
 7. **Управление VPN-соединением**  

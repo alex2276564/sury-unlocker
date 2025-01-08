@@ -17,7 +17,7 @@ usage() {
     echo "  -path=file.ovpn      Specify a custom OpenVPN configuration file."
     echo "  -disableovpn         Disable OpenVPN daemon if running."
     echo "  -addsuryrepositories Install Sury repositories (Debian-based systems only)."
-    echo "  -cleansuryrepositories Remove Sury repositories and related files."
+    echo "  -deletesuryrepositories Remove Sury repositories and related files."
     echo "  -username=<username> Specify the OpenVPN username (optional)."
     echo "  -password=<password> Specify the OpenVPN password (optional)."
     echo "  -help                Display this help message."
@@ -60,16 +60,16 @@ install_package() {
     fi
 }
 
-# Function to clean Sury repositories
-clean_sury_repositories() {
+# Function to delete Sury repositories
+delete_sury_repositories() {
     local os_family=$1
 
     if [ "$os_family" != "debian" ]; then
-        echo "Sury repositories can only be cleaned on Debian-based systems. Skipping."
+        echo "Sury repositories can only be deleted on Debian-based systems. Skipping."
         exit 0
     fi
 
-    echo "Cleaning Sury repositories..."
+    echo "Deleting Sury repositories..."
 
     # Remove repository file
     if [ -f /etc/apt/sources.list.d/php.list ]; then
@@ -92,7 +92,7 @@ clean_sury_repositories() {
     echo "Updating package lists..."
     $SUDO apt-get update
 
-    echo "Sury repositories cleaned successfully."
+    echo "Sury repositories deleted successfully."
 }
 
 # Function to configure and start OpenVPN
@@ -194,7 +194,7 @@ fi
 custom_ovpn=""
 disable_ovpn=false
 add_sury_repos=false
-clean_sury_repos=false
+delete_sury_repos=false
 vpn_username=""
 vpn_password=""
 
@@ -203,7 +203,7 @@ while [[ "$#" -gt 0 ]]; do
     -path=*) custom_ovpn="${1#*=}" ;;
     -disableovpn) disable_ovpn=true ;;
     -addsuryrepositories) add_sury_repos=true ;;
-    -cleansuryrepositories) clean_sury_repos=true ;;
+    -deletesuryrepositories) delete_sury_repos=true ;;
     -username=*) vpn_username="${1#*=}" ;;
     -password=*) vpn_password="${1#*=}" ;;
     -help)
@@ -237,8 +237,8 @@ if $add_sury_repos; then
     exit 0
 fi
 
-if $clean_sury_repos; then
-    clean_sury_repositories "$os_family"
+if $delete_sury_repos; then
+    delete_sury_repositories "$os_family"
     exit 0
 fi
 

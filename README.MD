@@ -84,10 +84,10 @@
    ```bash
    ./sury-unlocker.sh -path=your_custom_name.ovpn
    ```
-5.  **Clean Sury repositories (optional):**
-    - If you encounter an error with `apt update` after the blocking, use this command to clean up old repositories:
+5.  **Delete Sury repositories (optional):**
+    - If you encounter an error with `apt update` after the blocking, use this command to delete Sury repositories:
      ```bash
-    ./sury-unlocker.sh -cleansuryrepositories
+    ./sury-unlocker.sh -deletesuryrepositories
     ```
 6. **Add Sury repositories using the official method:**
    ```bash
@@ -152,11 +152,11 @@ To install Sury repositories using the official installer (only for Debian-based
 ./sury-unlocker.sh -addsuryrepositories
 ```
 
-### Clean Sury Repositories
+### Deleten Sury Repositories
 
-To remove Sury repositories and related files from your system, use the `-cleansuryrepositories` option:
+To remove Sury repositories and related files from your system, use the `-deletesuryrepositories` option:
 ```bash
-./sury-unlocker.sh -cleansuryrepositories
+./sury-unlocker.sh -deletesuryrepositories
 ```
 
 ### Disable OpenVPN
@@ -261,7 +261,7 @@ The script performs the following steps:
 6. **Sury Repository Management (Debian-based systems only)**  
    When using respective options:
    - `-addsuryrepositories`: installs repositories using official installer
-   - `-cleansuryrepositories`: completely removes all Sury repository files
+   - `-deletesuryrepositories`: completely removes all Sury repository files
    - Automatically verifies system compatibility before operations
 
 7. **VPN Connection Control**  
