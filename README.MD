@@ -6,7 +6,7 @@
 
 [🇷🇺 Руководство на русском](README.ru.md)
 
-**Sury Unlocker Script** is a Bash solution created in response to the [July 2024 geo-blocking](https://github.com/oerdnj/deb.sury.org/issues/2155) of `packages.sury.org` for Russian IP addresses. When Ondřej Surý implemented geo-restrictions for his PHP PPA repositories in Russia, this script was developed to provide a legitimate way to access these essential development resources. It uses OpenVPN with split-tunneling to bypass IP restrictions, supporting both Debian-based and RHEL-based distributions. While Sury repositories are only available for Debian-based systems, the script can be used in both host systems and Docker containers regardless of the host OS.
+**Sury Unlocker Script** is a Bash solution created in response to the [July 2024 geo-blocking](https://github.com/oerdnj/deb.sury.org/issues/2155) of `packages.sury.org` for Russian IP addresses. When Ondřej Surý implemented geo-restrictions for his PHP PPA repositories in Russia, this script was developed to provide a legitimate way to access these essential development resources. It uses OpenVPN with split-tunneling to bypass IP restrictions, supporting both Debian-based and RHEL-based distributions. While Sury repositories are only available for Debian-based systems, the script can be used in both host systems and Docker containers regardless of the host OS. Features VPN authentication support and comprehensive repository management tools.
 
 ---
 
@@ -19,15 +19,20 @@
 
 ## ✨ Features
 
-- ✅ **Multi-Distribution Support:** Works on both Debian and RHEL-based systems
-- ✅ **Wide Distribution Compatibility:** Supports various Linux distributions:
-  - Debian-based: Debian, Ubuntu, Linux Mint, Elementary OS, Kali Linux, Parrot OS, Deepin, Pop!_OS, KDE Neon, Zorin OS
-  - RHEL-based: RHEL, CentOS, Fedora, Rocky Linux, AlmaLinux, Oracle Linux, Scientific Linux, Amazon Linux
-- ✅ **Flexible Deployment:** Works both on host systems and in Docker containers
-- ✅ **Automated Setup:** Automatically installs and configures OpenVPN and DNS utilities
-- ✅ **Split-Tunneling Support:** Routes only specific traffic through the VPN
-- ✅ **Custom Configuration:** Specify custom `.ovpn` files
-- ✅ **Sury Repository Support:** Install Sury repositories on Debian-based systems
+- ✅ **Multi-distribution Support:** 
+  - **Debian-based Systems:** Full support with Sury repositories installation (Debian, Ubuntu, Linux Mint, etc.)
+  - **RHEL-based Systems:** Work as VPN tunnel proxy hosts. Perfect for running Docker containers with Debian/Sury
+- ✅ **Flexible Deployment:** 
+  - RHEL host systems can run Docker containers with Debian and Sury repositories
+  - VPN tunnel on the host automatically works for all containers
+- ✅ **Automatic Configuration:** Automatically installs and configures OpenVPN and DNS utilities
+- ✅ **Split-tunneling:** Routes only specific traffic through VPN
+- ✅ **Custom Configuration Support:** 
+  - Support for custom `.ovpn` files
+  - Authentication-enabled VPN servers support (username/password)
+- ✅ **Sury Repository Management:** 
+  - Official method repository installation
+  - Complete repository cleanup capability when needed
 
 ---
 
@@ -35,7 +40,7 @@
 
 ### System Requirements
 - **Supported Host Systems:** 
-  - Any Linux distribution (Debian-based or RHEL-based)
+  - Any Linux distribution (Debian-based or RHEL-based). **RHEL-based systems are intended for proxying traffic to packages.sury.org, primarily for running Docker containers with PHP Sury.**
 - **For Sury Repositories:** 
   - Must use a Debian-based system (either host or container)
 - **Docker (Optional):** 
@@ -47,10 +52,9 @@
 3. Place the `.ovpn` file in the same directory as the script.
 
 ### Installation Steps
-1. **Clone the Repository:**  
+1. **Clone the repository:**
    For Debian-based systems:
    ```bash
-   apt update && \
    apt install git -y && \
    git clone https://github.com/alex2276564/sury-unlocker.git && \
    cd sury-unlocker
@@ -62,24 +66,48 @@
    cd sury-unlocker
    ```
 
-2. **Prepare OpenVPN Configuration:**
+2. **Prepare OpenVPN configuration:**
    - Place your `.ovpn` file in the `sury-unlocker` directory.
-   - The file can have any name, as long as it's in the same directory as the script
+   - The file name can be anything, as long as it's in the same folder as the script.
 
-3. **Make the Script Executable:**  
+3. **Make the script executable:**
    ```bash
    chmod +x sury-unlocker.sh
    ```
 
-4. **Run the Script:**
-   - With default configuration:
+4. **Run the script:**
+   - With default settings:
    ```bash
    ./sury-unlocker.sh
    ```
-   - Or with a custom OpenVPN file name:
+   - Or with a custom `.ovpn` filename:
    ```bash
    ./sury-unlocker.sh -path=your_custom_name.ovpn
    ```
+5.  **Clean Sury repositories (optional):**
+    - If you encounter an error with `apt update` after the blocking, use this command to clean up old repositories:
+     ```bash
+    ./sury-unlocker.sh -cleansuryrepositories
+    ```
+6. **Add Sury repositories using the official method:**
+   ```bash
+   ./sury-unlocker.sh -addsuryrepositories
+   ```
+   - If you encounter an error when running the `addsuryrepositories` command, try the following:
+     - Terminate the current VPN connection using the `disableovpn` command:
+       ```bash
+       ./sury-unlocker.sh -disableovpn
+       ```
+     - Delete the old `.ovpn` file from the current directory if you didn't use the `-path` option.
+     - Find a new free VPN server, for example, at [FreeOpenVPN.org](https://www.freeopenvpn.org/) or [OpenTunnel.net](https://opentunnel.net/openvpn/).
+     - Reconnect to the VPN using the new `.ovpn` file, and try adding the Sury repositories again. Repeat these steps until the repositories are added successfully.
+
+7. **Install the desired PHP:**
+   - After successfully adding the Sury repositories, you can install the desired version of PHP, for example:
+   ```bash
+   apt install php7.4
+   ```
+   - Please note that installing PHP is only possible while the VPN connection is active. If the VPN disconnects, you will need to reconnect using a new VPN server and try again.
 
 ---
 
@@ -204,35 +232,42 @@ Note: Without proper container privileges (NET_ADMIN capability and TUN device a
 
 ---
 
-## 🌐 How It Works
+## 🌐 How it works
 
-This script follows these steps:
+The script performs the following steps:
 
 1. **OS Detection and Dependency Check**  
-   - Detects the operating system (Debian-based, RHEL-based, or other supported systems)
-   - Verifies and installs required tools:
+   - Identifies the operating system (Debian-based, RHEL-based, or other supported system)
+   - Checks for and installs required tools if needed:
      - `openvpn` for VPN connectivity
-     - `dnsutils` (Debian) or `bind-utils` (RHEL) for DNS resolution
+     - `dnsutils` (Debian) or `bind-utils` (RHEL) for DNS operations
 
-2. **Resolve IP Address**  
-   The script resolves the IPv4 address of `packages.sury.org` using the `nslookup` command, ensuring the latest IP is always used, even if it changes.
+2. **IP Address Resolution**  
+   Uses `nslookup` to determine the IPv4 address of `packages.sury.org`, ensuring the correct IP is used even if it changes
 
-3. **Modify OpenVPN Configuration**  
+3. **VPN Authentication Processing**
+   - Checks for username/password parameters
+   - Creates temporary authentication file when credentials are provided
+   - Automatically integrates credentials into OpenVPN configuration
+
+4. **OpenVPN Configuration Modification**  
    Modifies the provided `.ovpn` file to enable split-tunneling:  
-   - `route-nopull`: Prevents the VPN from routing all traffic
-   - Adds a specific route for the resolved IP of `packages.sury.org`
+   - `route-nopull`: prevents routing all traffic through VPN
+   - Adds route only for `packages.sury.org` IP address
 
-4. **Start OpenVPN Daemon**  
-   Launches the OpenVPN daemon in the background with the modified configuration, routing only specific traffic through the VPN while leaving other traffic unaffected.
+5. **OpenVPN Daemon Management**  
+   Launches OpenVPN daemon in background with modified configuration, routing only specific traffic through VPN
 
-5. **Sury Repository Installation (Debian-based systems only)**  
-   When using `-addsuryrepositories` on a Debian-based system, the script:
-   - Verifies the system is Debian-based
-   - Uses the official Sury repository installer
-   - Configures the repository with proper GPG keys and sources
+6. **Sury Repository Management (Debian-based systems only)**  
+   When using respective options:
+   - `-addsuryrepositories`: installs repositories using official installer
+   - `-cleansuryrepositories`: completely removes all Sury repository files
+   - Automatically verifies system compatibility before operations
 
-6. **Disable Option**  
-   Provides `-disableovpn` to stop the OpenVPN daemon and clean up processes, restoring normal network behavior.
+7. **VPN Connection Control**  
+   - `-disableovpn`: properly stops OpenVPN processes
+   - Automatically cleans up authentication temporary files
+   - Restores default network behavior
 
 ---
 
@@ -250,30 +285,10 @@ This script follows these steps:
      tail -f /var/log/openvpn.log
      ```
 
-2. **DNS Resolution Issues**  
-   - For Debian-based systems:
-     ```bash
-     sudo apt install dnsutils
-     ```
-   - For RHEL-based systems:
-     ```bash
-     sudo yum install bind-utils
-     ```
-   - Verify network connectivity
-   - Try alternative DNS servers
-
-3. **VPN Connection Problems**  
+2. **VPN Connection Problems**  
    - Ensure the VPN server is accessible
    - Try TCP-based `.ovpn` configurations
    - Consider alternative `.ovpn` files from [FreeOpenVPN.org](https://www.freeopenvpn.org/) or [OpenTunnel.net](https://opentunnel.net/openvpn/)
-
-4. **Sury Repository Installation Fails**  
-   - Verify you're using a Debian-based system
-   - Check internet connectivity through VPN:
-     ```bash
-     ping packages.sury.org
-     ```
-   - Ensure proper GPG key installation
 
 ---
 
