@@ -1,0 +1,31 @@
+name: Test Sury Unlocker Script
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+  bash-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up shellcheck
+        uses: ludeeus/action-shellcheck@master
+      - name: Run shellcheck
+        run: |
+          find . -name "*.sh" -print0 | xargs -0 shellcheck # Finds all files with the .sh extension in the current directory and subdirectories
+          
+          
+  markdown-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint Markdown files
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: '**/*.md' # Checks all Markdown files in the repository
+          fix: true # automatically fixes simple problems
+          config: '.markdownlint.jsonc'  # if you have a configuration file
+#        continue-on-error: true  # to prevent the build from crashing due to errors in the documentation
