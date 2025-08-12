@@ -310,26 +310,32 @@ The script performs the following steps:
    - Try TCP-based `.ovpn` configurations
    - Consider alternative `.ovpn` files from [FreeOpenVPN.org](https://www.freeopenvpn.org/) or [OpenTunnel.net](https://opentunnel.net/openvpn/)
 
+## 🆘 Support
+
+If you encounter any issues or have suggestions for improving the plugin, please create an [issue](https://github.com/alex2276564/sury-unlocker/issues) in this repository.
+
 ## 📄 License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👨‍💻 Author
 
-[Alex] - <https://github.com/alex2276564>
+[Alex] - [https://github.com/alex2276564]
 
-If you enjoy this project or find it useful, consider giving it a ⭐ on GitHub!
+We appreciate your contribution to the project! If you like this plugin, please give it a star on GitHub.
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome. Please feel free to check the issues page.
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/alex2276564/sury-unlocker/issues).
 
 ### How to Contribute
 
-1. **Fork the repository.**
-2. **Create a new branch (`git checkout -b feature/YourFeature`).**
-3. **Commit your changes (`git commit -m 'Add some feature').**
-4. **Push to the branch (`git push origin feature/YourFeature`).**
-5. **Open a Pull Request.**
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/YourFeature`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/YourFeature`).
+5. Open a Pull Request.
 
-Thank you for using the Sury Unlocker Script! We hope it helps you to bypass the Sury.org block for OpenVPN. 🚀🔓🌐
+---
+
+Thank you for using the **Sury Unlocker Script**! We hope it helps you to bypass the Sury.org block for OpenVPN. 🚀🔓🌐
