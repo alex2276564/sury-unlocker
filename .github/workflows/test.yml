@@ -21,7 +21,7 @@ jobs:
         run: |
           find . -name "*.sh" -print0 | xargs -0 shellcheck # Finds all files with the .sh extension in the current directory and subdirectories
 
-  markdown-lint:
+  lint-markdown:
     name: 🧹 Lint Markdown
     runs-on: ubuntu-latest
 
