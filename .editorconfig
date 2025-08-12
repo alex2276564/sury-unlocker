@@ -1,0 +1,15 @@
+root = true
+
+[*.sh]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+insert_final_newline = true
+
+# Additional parameters for shfmt:
+shell_variant = bash          # equivalent -ln bash
+switch_case_indent = true     # -ci
+binary_next_line = true       # -bn
+space_redirects = true        # -sr
+keep_padding = true           # -kp
