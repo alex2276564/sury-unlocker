@@ -1,4 +1,4 @@
-name: Test Sury Unlocker Script
+name: CI Pipeline
 
 on:
   push:
