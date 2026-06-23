@@ -94,6 +94,38 @@ jobs:
           reporter: ${{ github.event_name == 'pull_request' && 'github-pr-review' || 'github-check' }}
           level: error
 
+  lint-renovate:
+    name: 🧹 Lint Renovate
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@main
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@main
+        with:
+          persist-credentials: false
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@main
+        with:
+          bun-version: latest
+
+      - name: Setup Socket Firewall
+        uses: socketdev/action@main
+        with:
+          mode: firewall-free
+
+      - name: Validate Renovate Config via Socket Firewall
+        run: |
+          sfw bunx --package renovate renovate-config-validator --strict
+
   lint-bash:
     name: 🧹 Lint Bash
     runs-on: ubuntu-latest
