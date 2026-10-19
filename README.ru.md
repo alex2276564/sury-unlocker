@@ -48,7 +48,7 @@
 ### Конфигурация OpenVPN
 
 1. Получите `.ovpn` файл от вашего VPN-провайдера, находящегося за пределами России.
-2. Бесплатные OpenVPN конфигурации можно найти на [FreeOpenVPN.org](https://www.freeopenvpn.org/). **Обязательно используйте TCP-серверы.**
+2. Бесплатные OpenVPN конфигурации можно найти на [OpenTunnel.net](https://opentunnel.net/openvpn/). **Обязательно используйте TCP-серверы.**
 3. Поместите `.ovpn` файл в ту же директорию, где находится скрипт.
 
 ### Шаги установки
@@ -115,7 +115,7 @@
        ```
 
      - Удалите старый `.ovpn` файл из текущей директории, если вы не использовали опцию `-path`.
-     - Найдите новый бесплатный VPN-сервер, например, на [FreeOpenVPN.org](https://www.freeopenvpn.org/) или [OpenTunnel.net](https://opentunnel.net/openvpn/).
+     - Найдите новый бесплатный VPN-сервер, например, на [OpenTunnel.net](https://opentunnel.net/openvpn/).
      - Снова подключитесь к VPN, используя новый `.ovpn` файл, и попробуйте снова добавить репозитории Sury. Повторяйте эти шаги до тех пор, пока репозитории не будут добавлены успешно.
 
 7. **Установите необходимый PHP:**
@@ -311,7 +311,7 @@ RUN apt-get install -y php7.4
 2. **Проблемы с подключением к VPN**
    - Убедитесь, что VPN-сервер доступен.
    - Используйте `.ovpn` конфигурации с TCP.
-   - Попробуйте альтернативные `.ovpn` файлы с [FreeOpenVPN.org](https://www.freeopenvpn.org/) или [OpenTunnel.net](https://opentunnel.net/openvpn/).
+   - Попробуйте альтернативные `.ovpn` файлы с [OpenTunnel.net](https://opentunnel.net/openvpn/) или [OpenTunnel.net](https://opentunnel.net/openvpn/).
 
 ## 🆘 Поддержка
 

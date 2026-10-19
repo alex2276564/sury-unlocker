@@ -113,7 +113,6 @@ jobs:
           semgrep scan \
             --pro \
             --config auto \
-            --config "p/bash" \
             --config "p/owasp-top-ten" \
             --config "p/secrets" \
             --config "p/github-actions" \

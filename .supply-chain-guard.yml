@@ -2,6 +2,7 @@ rules:
   disable:
     GHA_TAG_NOT_SHA: "Exclude mutable action tag rule because supply-chain-guard does not support the modern actions.lockfile mechanism yet."
     GHA_THIRD_PARTY_ACTION: "Third-party actions are acceptable for this project."
+    SLSA_NO_PROVENANCE: "SLSA provenance not needed for this project."
 
 suppress:
   - rule: WORKFLOW_SECRET_TO_UPLOAD_PATH

@@ -48,7 +48,7 @@
 ### OpenVPN Configuration
 
 1. Obtain a `.ovpn` file for your NOT RUSSIA VPN provider.
-2. You can get free OpenVPN configurations from [FreeOpenVPN.org](https://www.freeopenvpn.org/). **Ensure you use TCP servers.**
+2. You can get free OpenVPN configurations from [OpenTunnel.net](https://opentunnel.net/openvpn/). **Ensure you use TCP servers.**
 3. Place the `.ovpn` file in the same directory as the script.
 
 ### Installation Steps
@@ -115,7 +115,7 @@
        ```
 
      - Delete the old `.ovpn` file from the current directory if you didn't use the `-path` option.
-     - Find a new free VPN server, for example, at [FreeOpenVPN.org](https://www.freeopenvpn.org/) or [OpenTunnel.net](https://opentunnel.net/openvpn/).
+     - Find a new free VPN server, for example, at [OpenTunnel.net](https://opentunnel.net/openvpn/).
      - Reconnect to the VPN using the new `.ovpn` file, and try adding the Sury repositories again. Repeat these steps until the repositories are added successfully.
 
 7. **Install the desired PHP:**
@@ -308,7 +308,7 @@ The script performs the following steps:
 2. **VPN Connection Problems**
    - Ensure the VPN server is accessible
    - Try TCP-based `.ovpn` configurations
-   - Consider alternative `.ovpn` files from [FreeOpenVPN.org](https://www.freeopenvpn.org/) or [OpenTunnel.net](https://opentunnel.net/openvpn/)
+   - Consider alternative `.ovpn` files from [OpenTunnel.net](https://opentunnel.net/openvpn/) or [OpenTunnel.net](https://opentunnel.net/openvpn/)
 
 ## 🆘 Support
 

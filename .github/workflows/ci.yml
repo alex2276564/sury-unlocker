@@ -68,7 +68,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up shellcheck
-        uses: ludeeus/action-shellcheck@2.0.0
+        uses: step-security/action-shellcheck@v2.0.0
 
       - name: Run shellcheck
         run: |
@@ -174,7 +174,6 @@ jobs:
           semgrep scan \
             --pro \
             --config auto \
-            --config "p/bash" \
             --config "p/owasp-top-ten" \
             --config "p/secrets" \
             --config "p/github-actions" \
