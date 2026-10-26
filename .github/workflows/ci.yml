@@ -23,12 +23,12 @@ defaults:
 jobs:
   lint-renovate:
     name: 🧹 Lint Renovate
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.1
+        uses: step-security/harden-runner@v2.22.2
         with:
           egress-policy: audit
 
@@ -53,12 +53,12 @@ jobs:
 
   lint-bash:
     name: 🧹 Lint Bash
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.1
+        uses: step-security/harden-runner@v2.22.2
         with:
           egress-policy: audit
 
@@ -77,7 +77,7 @@ jobs:
 
   lint-links:
     name: 🧹 Lint Links
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
 
     permissions:
@@ -87,7 +87,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.1
+        uses: step-security/harden-runner@v2.22.2
         with:
           egress-policy: audit
 
@@ -105,12 +105,12 @@ jobs:
 
   lint-markdown:
     name: 🧹 Lint Markdown
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.1
+        uses: step-security/harden-runner@v2.22.2
         with:
           egress-policy: audit
 
@@ -127,7 +127,7 @@ jobs:
 
   security-scan-semgrep:
     name: 🔐 Security Scan Semgrep
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 20
     environment: security-scans
 
@@ -138,7 +138,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.1
+        uses: step-security/harden-runner@v2.22.2
         with:
           egress-policy: audit
 
@@ -148,7 +148,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v7.0.0
+        uses: actions/setup-python@v7.1.0
         with:
           python-version: "3.x"
 
@@ -187,13 +187,13 @@ jobs:
         if: ${{ always() &&
           (github.event_name == 'push' ||
           (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false)) }}
-        uses: github/codeql-action/upload-sarif@v4.39.0
+        uses: github/codeql-action/upload-sarif@v4.39.1
         with:
           sarif_file: semgrep.sarif
 
   security-scan-jactionlint:
     name: 🔐 Security Scan jactionlint
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
 
     permissions:
@@ -202,7 +202,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.1
+        uses: step-security/harden-runner@v2.22.2
         with:
           egress-policy: audit
 
@@ -212,7 +212,7 @@ jobs:
           persist-credentials: false
 
       - name: Run jactionlint (pedantic + online + strict exit)
-        uses: jdx/jactionlint@v2.2.0
+        uses: jdx/jactionlint@v2.3.0
         with:
           profile: pedantic
           online: strict
@@ -221,7 +221,7 @@ jobs:
 
   security-scan-supply-chain-guard:
     name: 🔐 Security Scan supply-chain-guard
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
 
     permissions:
@@ -230,7 +230,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.1
+        uses: step-security/harden-runner@v2.22.2
         with:
           egress-policy: audit
 
@@ -239,7 +239,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: homeofe/supply-chain-guard@v6.5.9
+      - uses: homeofe/supply-chain-guard@v6.6.0
         with:
           fail-on: low
           comment-on-pr: true
@@ -248,7 +248,7 @@ jobs:
 
   security-scan-gh-actions-lockfile:
     name: 🔐 Security Scan GitHub Actions Lockfile
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
 
     env:
@@ -256,7 +256,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.1
+        uses: step-security/harden-runner@v2.22.2
         with:
           egress-policy: audit
 
@@ -292,7 +292,7 @@ jobs:
 
   dependency-review:
     name: 🧩 Dependency Review (PR)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
 
     # Skip Dependency Review for push
@@ -304,7 +304,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.1
+        uses: step-security/harden-runner@v2.22.2
         with:
           egress-policy: audit
 
@@ -320,12 +320,12 @@ jobs:
 
   secrets-scan-trufflehog:
     name: 🔑 Secrets Scan TruffleHog
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.1
+        uses: step-security/harden-runner@v2.22.2
         with:
           egress-policy: audit
 
@@ -337,14 +337,14 @@ jobs:
 
       - name: TruffleHog Secrets Scan (full)
         if: ${{ github.event_name != 'pull_request' }}
-        uses: trufflesecurity/trufflehog@v3.99.2
+        uses: trufflesecurity/trufflehog@v3.99.4
         with:
           path: ./
           extra_args: --results=verified,unknown
 
       - name: TruffleHog Secrets Scan (diff)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: trufflesecurity/trufflehog@v3.99.2
+        uses: trufflesecurity/trufflehog@v3.99.4
         with:
           path: ./
           base: ${{ github.event.pull_request.base.sha }}
