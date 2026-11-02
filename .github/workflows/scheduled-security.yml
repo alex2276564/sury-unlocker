@@ -77,7 +77,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.2
+        uses: step-security/harden-runner@v2.22.3
         with:
           egress-policy: audit
 
@@ -149,7 +149,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.2
+        uses: step-security/harden-runner@v2.22.3
         with:
           egress-policy: audit
 
@@ -185,7 +185,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.2
+        uses: step-security/harden-runner@v2.22.3
         with:
           egress-policy: audit
 
@@ -195,7 +195,7 @@ jobs:
           persist-credentials: false
 
       - name: Run jactionlint (pedantic + online + strict exit)
-        uses: jdx/jactionlint@v2.3.0
+        uses: jdx/jactionlint@v2.4.0
         with:
           profile: pedantic
           online: strict
@@ -212,7 +212,7 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v2.22.2
+        uses: step-security/harden-runner@v2.22.3
         with:
           egress-policy: audit
 
